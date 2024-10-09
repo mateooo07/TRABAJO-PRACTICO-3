@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 
 class TrabajoPractico3
 {
-    
+    static int[][] asientos = FuncionCrearVuelo();
+
     static bool vueloCreado = false;
     static bool asientoReservado = false;
     static int opcion = 1;
@@ -13,20 +15,23 @@ class TrabajoPractico3
     {
         Inicio();
         Menú();
-        
+
     }
-    static int[][] asientos = Vuelo();
+
     static void Inicio() // Función correspondiente a la pantalla de bienvenida.
     {
         Console.CursorVisible = false;
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.WriteLine("--------------------------------------");
         Console.WriteLine("|¡Bienvenido a Aerolíneas Argentinas!|");
         Console.WriteLine("--------------------------------------");
         Bandera();
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.WriteLine("\nPresiona cualquier tecla para continuar...");
+        Console.ResetColor();
         Console.ReadKey();
     }
-    
+
     static void Bandera()
     {
         ConsoleColor colorCeleste = ConsoleColor.Cyan;
@@ -58,80 +63,82 @@ class TrabajoPractico3
 
     static void Menú() //Función correspondiente al menu principal del programa.
     {
-        int opcion = 0; 
+        int opcion = 0;
         ConsoleKeyInfo Flecha;
         Console.CursorVisible = false;
-        
+
 
         do
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.Clear();
             Console.WriteLine("----------");
             Console.WriteLine("|| MENÚ ||");
             Console.WriteLine("----------\n");
+            Console.ResetColor();
 
-            
+
             for (int i = 0; i <= 6; i++)
             {
                 if (opcion == i)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green; 
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine($"{MenuNumeros(i)}");
-                    Console.ResetColor(); 
+                    Console.ResetColor();
                 }
                 else
                 {
-                    
+                    Console.ForegroundColor= ConsoleColor.Blue;
                     Console.WriteLine($" {MenuNumeros(i)}");
+                    Console.ResetColor();
                 }
             }
 
-            
+
             Flecha = Console.ReadKey(true);
             if (Flecha.Key == ConsoleKey.UpArrow && opcion > 0) opcion--;
             if (Flecha.Key == ConsoleKey.DownArrow && opcion < 7) opcion++;
 
-        } while (Flecha.Key != ConsoleKey.Enter); 
+
+        } while (Flecha.Key != ConsoleKey.Enter);
         switch (opcion)
         {
             case 0:
-                
+                Console.Clear();
+                Vuelo();
                 EsperarYVolverAlMenu();
                 break;
             case 1:
-                if (vueloCreado)
-                {
-                    ReservarAsiento();
-                    EsperarYVolverAlMenu();
-                }
-                else
-                {
-                    Console.WriteLine("\nPrimero debe crear un vuelo antes de reservar un asiento.");
-                }
+                Console.Clear();
+                ReservarAsiento();
+                EsperarYVolverAlMenu();
                 break;
             case 2:
-                
-                Console.WriteLine("Funcionalidad no implementada.");
+                Console.Clear();
+                CancelarReserva();
                 EsperarYVolverAlMenu();
                 break;
             case 3:
-                
-                Console.WriteLine("Funcionalidad no implementada.");
+                Console.Clear();
+                MostrarEstadoVuelo();
+                Thread.Sleep(1500);
                 EsperarYVolverAlMenu();
                 break;
             case 4:
-                
+
                 Console.WriteLine("Funcionalidad no implementada.");
                 EsperarYVolverAlMenu();
                 break;
             case 5:
-                
+
                 Console.WriteLine("Funcionalidad no implementada.");
                 EsperarYVolverAlMenu();
                 break;
             case 6:
-               
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Saliendo del sistema...");
+                Console.ResetColor();
                 break;
         }
     }
@@ -146,15 +153,15 @@ class TrabajoPractico3
                       "\n ------------------------------------------------------------------";
             case 1:
                 return "------------------------------------------------------------------\n" +
-                    " > Reservar un asiento.                                          |" +
+                    " > Reservar un asiento.                                           |" +
                     "\n ------------------------------------------------------------------";
             case 2:
                 return "------------------------------------------------------------------\n" +
-                    " > Cancelar una reserva.                                         |" +
+                    " > Cancelar una reserva.                                          |" +
                     "\n ------------------------------------------------------------------";
             case 3:
                 return "------------------------------------------------------------------\n" +
-                    " > Mostrar estado actual del vuelo.                               |" +
+                    " > Mostrar tabla del estado actual del vuelo.                     |" +
                     "\n ------------------------------------------------------------------";
             case 4:
                 return "------------------------------------------------------------------\n" +
@@ -179,8 +186,11 @@ class TrabajoPractico3
         bool volverValido = false;
         while (volverValido != true)
         {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("\nPresiona 'M' para volver al menú.");
+            
             volverMenu = Console.ReadKey(true);
+            Console.ResetColor();
 
             if (volverMenu.Key == ConsoleKey.M)
             {
@@ -190,42 +200,62 @@ class TrabajoPractico3
         Menú(); // Volver al menú principal
     }
 
-    static int[][] Vuelo()
+    static void Vuelo()
     {
         int opcionVuelo = 0;
-        Console.Clear();
-        Console.WriteLine("A donde desea viajar: ");
-
-        Console.WriteLine("\n1. París \n2. Nueva York \n3. Tokio \n4. Sídney \n5. Roma");
+        while (opcionVuelo < 1 || opcionVuelo > 5)
         {
-            Console.Write("\nIngresa el número de la opción: ");
-            opcionVuelo = int.Parse(Console.ReadLine());
-
-            switch (opcionVuelo)
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("A donde desea viajar: ");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("\n1. París \n2. Nueva York \n3. Tokio \n4. Sídney \n5. Roma");
             {
-                case 1:
-                    Console.WriteLine("El vuelo a París ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
-                    break;
-                case 2:
-                    Console.WriteLine("El viaje a Nueva York ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
-                    break;
-                case 3:
-                    Console.WriteLine("El viaje a Tokio ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
-                    break;
-                case 4:
-                    Console.WriteLine("El viaje a Sídney ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
-                    break;
-                case 5:
-                    Console.WriteLine("El viaje a Roma ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
-                    break;
-                default:
-                    Console.WriteLine("Opción no válida. Elija otra opción.");
-                    break;
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write("\nIngresa el número de la opción: ");
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                opcionVuelo = int.Parse(Console.ReadLine());
+                Console.ForegroundColor = ConsoleColor.Green;
+                switch (opcionVuelo)
+                {
+                    case 1:
+                        Console.WriteLine("\nEl vuelo a París ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                        break;
+                    case 2:
+                        Console.WriteLine("\nEl viaje a Nueva York ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                        break;
+                    case 3:
+                        Console.WriteLine("\nEl viaje a Tokio ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                        break;
+                    case 4:
+                        Console.WriteLine("\nEl viaje a Sídney ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                        break;
+                    case 5:
+                        Console.WriteLine("\nEl viaje a Roma ha sido creado. Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Clear();
+                        Console.WriteLine("\nOpción no válida. Elija otra opción.");
+                        Thread.Sleep(2500);
+
+                        break;
+                }
             }
+            FuncionCrearVuelo();
+
+            vueloCreado = true;
+
         }
 
+
+    }
+
+    static int[][] FuncionCrearVuelo()
+    {
+
         int[][] asientos = new int[10][];
-        for(int i =  0; i < asientos.Length; i++)
+        for (int i = 0; i < asientos.Length; i++)
         {
             asientos[i] = new int[6];
         }
@@ -233,62 +263,239 @@ class TrabajoPractico3
         {
             for (int j = 0; j < asientos[i].Length; j++)
             {
-                asientos[i][j] = 0; 
+                asientos[i][j] = 0;
             }
-            
+
         }
-        vueloCreado = true;
+
         return asientos;
     }
 
     static void ReservarAsiento()
     {
         asientoDesocupado = false;
-        while(asientoDesocupado == false)
+        if (vueloCreado)
         {
-            Console.Clear();
-            int fila = -1;
-            int asiento = -1;
-            while (fila > 9 || fila < 0)
+            while (asientoDesocupado == false)
             {
-                Console.Write($"Escriba fila en la que desea viajar: ");
-                fila = int.Parse(Console.ReadLine()) - 1;
-                if (fila > 9 || fila < 0)
+                int fila = -1;
+                int asiento = -1;
+                while (fila > 9 || fila < 0)
                 {
-                    Console.WriteLine("\nElija una fila válida, recuerde que el avión cuenta con 10 filas de asientos.");
-                }
-                else
-                {
-                    Console.Write("\nEscriba la columna en la que desea viajar: ");
-                    asiento = int.Parse(Console.ReadLine()) - 1;
-                    if (asiento > 5 || asiento < 0)
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Clear();
+                    Console.Write($"\nEscriba fila en la que desea viajar: ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    fila = int.Parse(Console.ReadLine()) - 1;
+                    if (fila > 9 || fila < 0)
                     {
-                        Console.WriteLine("\nElija una columna válida, recuerde que cada fila cuenta con 6 asientos.");
-
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Clear();
+                        Console.WriteLine("\nElija una fila válida, recuerde que el avión cuenta con 10 filas de asientos.");
+                        Thread.Sleep(2500);
                     }
-                       
-                    if (asientos[fila][asiento] == 1)  // Si el asiento ya está reservado
-                    {
-                        Console.WriteLine("\nEl asiento elegido ya está reservado. Por favor, elija otro.");
-                        Console.WriteLine("\nPresione cualquier tecla para continuar...");
-                        Console.ReadKey();  // Esperar a que el usuario presione una tecla para continuar
-                    }
-                       
                     else
                     {
-                         asientos[fila][asiento] = 1;
-                         Console.WriteLine($"\n Su asiento ha sido reservado. Su asiento es el F{fila + 1}A{asiento + 1}.");
-                         asientoReservado = true;
-                         asientoDesocupado = true;
-                    }
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("\nEscriba la columna en la que desea viajar: ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        asiento = int.Parse(Console.ReadLine()) - 1;
+                        if (asiento > 5 || asiento < 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("\nElija una columna válida, recuerde que cada fila cuenta con 6 asientos.");
+                            Thread.Sleep(2500);
+                            fila = -1;
 
-                    
+                        }
+                        else
+                        {
+                            if (asientos[fila][asiento] == 1)  // Si el asiento ya está reservado
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("\nEl asiento elegido ya está reservado. Por favor, elija otro.");
+                                Thread.Sleep(2500);
+                                Console.WriteLine("\nPresione cualquier tecla para continuar...");
+                                Console.ReadKey();  // Esperar a que el usuario presione una tecla para continuar
+
+                            }
+
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                asientos[fila][asiento] = 1;
+                                Console.WriteLine($"\nSu asiento ha sido reservado. Su asiento es el F{fila + 1}A{asiento + 1}.");
+                                asientoReservado = true;
+                                asientoDesocupado = true;
+                            }
+                        }
+
+
+
+
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nPrimero debe crear un vuelo para reservar un asiento.");
+            Thread.Sleep(1500);
+        }
+
+
+    }
+
+    static void CancelarReserva()
+    {
+        
+        if (asientoReservado == true)
+        {
+            while (asientoDesocupado == true)
+            {
+                int fila = -1;
+                int asiento = -1;
+                while (fila > 9 || fila < 0)
+                {
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write($"\nEscriba fila del asiento reservado: ");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    fila = int.Parse(Console.ReadLine()) - 1;
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    if (fila > 9 || fila < 0)
+                    {
+                        Console.Clear();
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("\nElija una fila válida, recuerde que el avión cuenta con 10 filas de asientos.");
+                        Thread.Sleep(2500);
+                    }
+                    else
+                    {
+                        Console.Write("\nEscriba la columna del asiento reservado: ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        asiento = int.Parse(Console.ReadLine()) - 1;
+
+                        if (asiento > 5 || asiento < 0)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Clear();
+                            Console.WriteLine("\nElija una columna válida, recuerde que cada fila cuenta con 6 asientos.");
+                            Thread.Sleep(2500);
+                            fila = -1;
+                        }
+                        else
+                        {
+                            if (asientos[fila][asiento] == 0)  // Si el asiento ya está reservado
+                            {
+
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.Clear();
+                                Console.WriteLine("\nEl asiento elegido no está reservado. Por favor, intente de nuevo.");
+                                Thread.Sleep(1500);
+                                Console.WriteLine("\nPresione cualquier tecla para continuar...");
+                                Console.ReadKey();  // Esperar a que el usuario presione una tecla para continuar
+                            }
+
+                            else
+                            {
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                asientos[fila][asiento] = 0;
+                                Console.WriteLine($"\nSu reserva ha sido cancelada.");
+
+                                asientoDesocupado = false;
+                            }
+                        }
+
+
+
+                    }
                 }
             }
-            
-            
         }
-    }
-            
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nPrimero debe reservar un asiento.");
+            Thread.Sleep(1500);
+        }
 
     }
+
+    static void MostrarEstadoVuelo()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        if (vueloCreado)
+        {
+            Console.WriteLine("|-----------------------------------------------------------------------------------------------------|");
+            Console.WriteLine("|                                           ESTADO DEL VUELO                                          |");
+            Console.WriteLine("|-----------------------------------------------------------------------------------------------------|");
+            Console.WriteLine("|----ASIENTO1----|----ASIENTO2----|----ASIENTO3----|----ASIENTO4----|----ASIENTO5----|----ASIENTO6----|");
+            Console.ResetColor();
+            for (int i = 0; i < asientos.Length; i++)
+            {
+
+                for (int j = 0; j < asientos[i].Length; j++)
+                {
+                    string fila = (i + 1).ToString("D2");
+                    string asiento = (j + 1).ToString();
+                    if (asientos[i][j] == 1)
+                    {
+                        if (asiento == "1")
+                        {
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write("|");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write($"F{fila}A{asiento}:RESERVADO".PadRight(16)); // Alinear
+                            Console.ResetColor();
+
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write("|");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write($"F{fila}A{asiento}:RESERVADO".PadRight(16)); // Alinear
+                            Console.ResetColor();
+                        }
+
+
+                    }
+                    else
+                    {
+
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("|");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write($"F{fila}A{asiento}:LIBRE".PadRight(16)); // Alinear
+                        Console.ResetColor();
+
+
+                    }
+                }
+
+                // Separador de final de fila
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("|");
+                Console.ResetColor();
+            }
+
+            // Línea final de la tabla
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("|----------------|----------------|----------------|----------------|----------------|----------------|");
+            Console.ResetColor();
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("\nPrimero debe crear un vuelo para poder acceder a la tabla.");
+            Thread.Sleep(1500);
+        }
+        
+    }
+} 
+
