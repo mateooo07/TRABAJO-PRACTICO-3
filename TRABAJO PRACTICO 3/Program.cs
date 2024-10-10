@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 class TrabajoPractico3
 {
@@ -11,11 +12,14 @@ class TrabajoPractico3
     static int opcion = 1;
     static bool asientoDesocupado = false;
 
+    static int opcionVuelo = 0;
+    static int fila = -1;
+    static int asiento = -1;
+    static int contadorAsientos = 0;
     static void Main()
     {
         Inicio();
         Menú();
-
     }
 
     static void Inicio() // Función correspondiente a la pantalla de bienvenida.
@@ -83,24 +87,27 @@ class TrabajoPractico3
                 if (opcion == i)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"{MenuNumeros(i)}");
+                    Console.WriteLine(MenuNumeros(i));
                     Console.ResetColor();
                 }
                 else
                 {
                     Console.ForegroundColor= ConsoleColor.Blue;
-                    Console.WriteLine($" {MenuNumeros(i)}");
+                    Console.WriteLine(MenuNumeros(i));
                     Console.ResetColor();
                 }
             }
 
 
             Flecha = Console.ReadKey(true);
-            if (Flecha.Key == ConsoleKey.UpArrow && opcion > 0) opcion--;
-            if (Flecha.Key == ConsoleKey.DownArrow && opcion < 7) opcion++;
+            if (Flecha.Key == ConsoleKey.UpArrow && opcion > 0) 
+                opcion--;
+            if (Flecha.Key == ConsoleKey.DownArrow && opcion < 7) 
+                opcion++;
 
 
         } while (Flecha.Key != ConsoleKey.Enter);
+
         switch (opcion)
         {
             case 0:
@@ -125,8 +132,8 @@ class TrabajoPractico3
                 EsperarYVolverAlMenu();
                 break;
             case 4:
-
-                Console.WriteLine("Funcionalidad no implementada.");
+                Console.Clear();
+                CantidadAsientosDisponibles();
                 EsperarYVolverAlMenu();
                 break;
             case 5:
@@ -138,6 +145,7 @@ class TrabajoPractico3
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Saliendo del sistema...");
+                Thread.Sleep(1500);
                 Console.ResetColor();
                 break;
         }
@@ -202,7 +210,7 @@ class TrabajoPractico3
 
     static void Vuelo()
     {
-        int opcionVuelo = 0;
+        //int opcionVuelo = 0;
         while (opcionVuelo < 1 || opcionVuelo > 5)
         {
             Console.Clear();
@@ -278,12 +286,14 @@ class TrabajoPractico3
         {
             while (asientoDesocupado == false)
             {
-                int fila = -1;
-                int asiento = -1;
+                //int fila = -1;
+                //int asiento = -1;
                 while (fila > 9 || fila < 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.Clear();
+                    Console.WriteLine("Su vuelo cuenta con 10 filas, con 6 asientos cada una.");
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.Write($"\nEscriba fila en la que desea viajar: ");
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     fila = int.Parse(Console.ReadLine()) - 1;
@@ -297,9 +307,10 @@ class TrabajoPractico3
                     else
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
-                        Console.Write("\nEscriba la columna en la que desea viajar: ");
+                        Console.Write("\nEscriba en el asiento en el que desea viajar: ");
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         asiento = int.Parse(Console.ReadLine()) - 1;
+                        contadorAsientos++;
                         if (asiento > 5 || asiento < 0)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -496,6 +507,37 @@ class TrabajoPractico3
             Thread.Sleep(1500);
         }
         
+    }
+
+    static void CantidadAsientosDisponibles()
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        switch (opcionVuelo)
+        {
+            case 1:
+                Console.WriteLine($"\nEn el viaje elegido a: París.");
+                break;
+            case 2:
+                Console.WriteLine($"\nEn el viaje elegido a: Nueva York");
+                break;
+            case 3:
+                Console.WriteLine($"\nEn el viaje elegido a: Tokio");
+                break;
+            case 4:
+                Console.WriteLine($"\nEn el viaje elegido a: Sídney");
+                break;
+            case 5:
+                Console.WriteLine($"\nEn el viaje elegido a: Roma");
+                break;
+        }
+        
+        Console.WriteLine($"La cantidad de asientos libres en el vuelo son: {60 - contadorAsientos} asientos");
+        Console.WriteLine($"La cantidad de asientos reservados en el vuelo son: {contadorAsientos} asientos\n");
+
+        MostrarEstadoVuelo();
+
+
+
     }
 } 
 
